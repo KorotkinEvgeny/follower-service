@@ -1,0 +1,39 @@
+version: "3.8"
+
+services:
+  api:
+    container_name: follower-service
+    hostname: follower-service
+    stdin_open: true
+    tty: true
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - 3000:3000
+    environment:
+      - ENV=local
+      - SERVER_SRV_HOST=
+      - SERVER_SRV_PORT=3000
+      - PARTITIONS=60
+    networks:
+      - follower-service
+
+  db:
+    image: postgres:15.1-alpine
+    hostname: follower-db
+    container_name: follower-db
+    environment:
+      POSTGRES_DB: follower_service
+      POSTGRES_USER: follower_service
+      POSTGRES_PASSWORD: follower_service
+      POSTGRES_PORT:
+    ports:
+      - 5432:5432
+    volumes:
+      - postgres_data:/var/lib/postgresql/data/
+    networks:
+      - follower-service
+
+networks:
+  follower-service:
