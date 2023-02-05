@@ -10,28 +10,34 @@ type Service struct {
 	repo repository.UserReaderWriter
 }
 
-func (s *Service) GetUserInfo(ctx context.Context) ([]*dto.User, error) {
-	//TODO implement me
-	panic("implement me")
-}
-
-func (s *Service) ListUsers(ctx context.Context) ([]*dto.User, error) {
-	//TODO implement me
-	panic("implement me")
-}
-
 func (s *Service) Create(ctx context.Context, user dto.User) (*dto.User, error) {
-	user, err := s.repo.Store(ctx, user)
+	userStored, err := s.repo.Store(ctx, user)
 	if err != nil {
 		return nil, err
 	}
 
-	return &user, nil
+	return userStored, nil
+}
+
+func (s *Service) ListUsers(ctx context.Context) ([]*dto.User, error) {
+	users, err := s.repo.RetrieveUsers(ctx)
+	if err != nil {
+		return nil, err
+	}
+	return users, nil
 }
 
 func (s *Service) GetUsers(ctx context.Context) ([]*dto.User, error) {
 	//TODO implement me
 	panic("implement me")
+}
+
+func (s *Service) GetUserInfo(ctx context.Context, userID int) (*dto.User, error) {
+	user, err := s.repo.RetrieveUser(ctx, userID)
+	if err != nil {
+		return nil, err
+	}
+	return user, nil
 }
 
 func NewUserService(userRepo repository.UserReaderWriter) *Service {

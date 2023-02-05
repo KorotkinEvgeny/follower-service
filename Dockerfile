@@ -1,4 +1,4 @@
-FROM golang:1.19-alpine3.17 as bulder
+FROM golang:1.19-alpine3.17 as builder
 
 RUN apk add --no-cache ca-certificates
 RUN apk update --no-cache && apk upgrade --no-cache
@@ -6,7 +6,7 @@ RUN echo "http://dl-cdn.alpinelinux.org/alpine/edge/main" >> /etc/apk/repositori
 RUN echo "http://dl-cdn.alpinelinux.org/alpine/edge/community" >> /etc/apk/repositories
 RUN apk add libc-dev gcc openssh-client git --no-cache
 
-WORKDIR follower-service
+WORKDIR service
 
 COPY go.mod go.sum ./
 RUN go mod download
@@ -24,5 +24,6 @@ RUN echo "http://dl-cdn.alpinelinux.org/alpine/edge/main" >> /etc/apk/repositori
 RUN echo "http://dl-cdn.alpinelinux.org/alpine/edge/community" >> /etc/apk/repositories
 RUN apk update && apk upgrade
 COPY --from=builder /app /app
+COPY /migrations /migrations
 EXPOSE 3000
 CMD ["/app"]

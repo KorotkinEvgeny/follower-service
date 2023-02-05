@@ -41,13 +41,21 @@ func main() {
 		panic(err.Error())
 	}
 
-	followerRepo := postgres.NewFollowRepository(dbConnection)
-	followService := follow.NewFollowService(followerRepo)
-	followHandler := handler.NewFollowHandler(followService, validate)
+	if cfg.GetBool("debug") {
+		err = postgres.Migrate(dbConnection)
+		if err != nil {
+			panic(err)
+		}
+	}
 
 	userRepo := postgres.NewUserRepository(dbConnection)
 	userService := user.NewUserService(userRepo)
 	userHandler := handler.NewUserHandler(userService, validate)
+
+	followerRepo := postgres.NewFollowRepository(dbConnection)
+	followService := follow.NewFollowService(followerRepo)
+	followHandler := handler.NewFollowHandler(followService, validate, userService)
+
 	newRouter := api.NewChiRouter(apiHealthHandler, followHandler, userHandler)
 
 	host := cfg.GetString("server.host")

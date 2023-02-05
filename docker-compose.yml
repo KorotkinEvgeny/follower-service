@@ -16,6 +16,13 @@ services:
       - SERVER_SRV_HOST=
       - SERVER_SRV_PORT=3000
       - PARTITIONS=60
+      - DB_HOST=db
+      - DB_PORT=5432
+      - DB_NAME=follower_service
+      - DB_USER=follower_service
+      - DB_PASSWORD=follower_service
+      - DEBUG=1
+#    command: tail -F anything
     networks:
       - follower-service
 
@@ -34,6 +41,9 @@ services:
       - postgres_data:/var/lib/postgresql/data/
     networks:
       - follower-service
+
+volumes:
+  postgres_data:
 
 networks:
   follower-service:

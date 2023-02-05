@@ -39,17 +39,14 @@ func Recovery(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(writer http.ResponseWriter, request *http.Request) {
 		defer func() {
 			if rvr := recover(); rvr != nil && rvr != http.ErrAbortHandler {
-				err, ok := rvr.(error)
-				if ok {
-					log.Error(err)
-					jsonBody, _ := json.Marshal(map[string]string{
-						"error": "Internal server error",
-					})
+				log.Errorf("Error %v", rvr)
+				jsonBody, _ := json.Marshal(map[string]string{
+					"error": "Internal server error",
+				})
 
-					writer.Header().Set("Content-Type", "application/json")
-					writer.WriteHeader(http.StatusInternalServerError)
-					_, _ = writer.Write(jsonBody)
-				}
+				writer.Header().Set("Content-Type", "application/json")
+				writer.WriteHeader(http.StatusInternalServerError)
+				_, _ = writer.Write(jsonBody)
 			}
 		}()
 

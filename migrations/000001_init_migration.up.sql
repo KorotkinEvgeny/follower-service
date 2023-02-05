@@ -23,8 +23,7 @@ CREATE TABLE users
     created_date  TIMESTAMP DEFAULT NOW(),
     modified_date TIMESTAMP DEFAULT NOW(),
     deleted_date  TIMESTAMP NULL,
-    nickname      TEXT,
-    PRIMARY KEY (id)
+    nickname      TEXT
 );
 
 CREATE TRIGGER set_modified_date
@@ -56,3 +55,6 @@ CREATE TRIGGER set_modified_date
     ON follows
     FOR EACH ROW
 EXECUTE PROCEDURE trigger_modified_date_timestamp();
+
+CREATE INDEX follower_idx on follows (follower_id);
+CREATE INDEX followee_idx on follows (followee_id);

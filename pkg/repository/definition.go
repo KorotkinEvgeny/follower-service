@@ -6,12 +6,13 @@ import (
 )
 
 type FollowWriter interface {
-	Store(ctx context.Context, request dto.Follow) (dto.Follow, error)
+	Store(ctx context.Context, request dto.Follow) (*dto.Follow, error)
+	Unfollow(ctx context.Context, unfollow dto.Unfollow) error
 }
 
 type FollowReader interface {
-	ListFollowers(ctx context.Context, userID string) ([]*dto.Follow, error)
-	ListFollowee(ctx context.Context, userID string) ([]*dto.Follow, error)
+	ListFollowers(ctx context.Context, userID int) ([]*dto.Follow, error)
+	ListFollowee(ctx context.Context, userID int) ([]*dto.Follow, error)
 }
 
 type FollowReaderWriter interface {
@@ -20,11 +21,11 @@ type FollowReaderWriter interface {
 }
 
 type UserWriter interface {
-	Store(ctx context.Context, user dto.User) (dto.User, error)
+	Store(ctx context.Context, user dto.User) (*dto.User, error)
 }
 
 type UserReader interface {
-	RetrieveUser(ctx context.Context, userID string) (dto.User, error)
+	RetrieveUser(ctx context.Context, userID int) (*dto.User, error)
 	RetrieveUsers(ctx context.Context) ([]*dto.User, error)
 }
 

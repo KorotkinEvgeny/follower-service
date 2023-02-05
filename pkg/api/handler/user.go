@@ -4,10 +4,12 @@ import (
 	"encoding/json"
 	"github.com/follower-service/pkg/dto"
 	"github.com/follower-service/pkg/service"
+	"github.com/go-chi/chi/v5"
 	"github.com/go-playground/validator/v10"
 	log "github.com/sirupsen/logrus"
 	"io"
 	"net/http"
+	"strconv"
 )
 
 type UserHandler struct {
@@ -44,6 +46,7 @@ func (u *UserHandler) CreateUser(w http.ResponseWriter, r *http.Request) {
 	}
 	createdUser, err := u.service.Create(ctx, user)
 	if err != nil {
+		log.Errorf("user creation error %s", err.Error())
 		responseInternalErrorRender(w, r)
 		return
 	}
@@ -66,8 +69,19 @@ func (u *UserHandler) GetUsers(w http.ResponseWriter, r *http.Request) {
 
 func (u *UserHandler) GetUserInfo(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
+	userIDParam := chi.URLParam(r, "user_id")
+	if userIDParam == "" {
+		responseBadRequestRender("incorrect user_id param", w, r)
+		return
+	}
 
-	users, err := u.service.GetUsers(ctx)
+	userID, err := strconv.Atoi(userIDParam)
+	if err != nil {
+		responseBadRequestRender(err.Error(), w, r)
+		return
+	}
+
+	users, err := u.service.GetUserInfo(ctx, userID)
 	if err != nil {
 		responseInternalErrorRender(w, r)
 		return

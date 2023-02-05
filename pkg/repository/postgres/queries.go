@@ -1,14 +1,9 @@
 package postgres
 
-type Query string
-
-type Queryx struct {
-	Query  Query
-	Params []interface{}
-}
-
 var (
-	insertFollowRecordQuery Query = `INSERT INTO followers (follower, followee) VALUES (:follower, :followee);`
-	insertUserQuery         Query = `INSERT INTO users (id) VALUES `
-	getUserQuery            Query = `SELECT * FROM users WHERE user_id = :user_id`
+	insertFollowRecordQuery = `INSERT INTO follows (follower_id, followee_id) VALUES (:follower_id, :followee_id) RETURNING id, follower_id, followee_id;`
+	insertUserQuery         = `INSERT INTO users (nickname) VALUES (:nickname) RETURNING id, created_date, nickname`
+	getUserQuery            = `SELECT id, created_date, nickname FROM users WHERE id = :user_id`
+	getFollowersQuery       = `SELECT id, follower_id, followee_id FROM follows WHERE followee_id = :user_id`
+	getFolloweeQuery        = `SELECT id, follower_id, followee_id FROM follows WHERE follower_id = :user_id`
 )

@@ -17,6 +17,8 @@ var aliases = map[string]string{
 	"DB_USER":     "db.username",
 	"DB_PASSWORD": "db.password",
 
+	"DEBUG": "debug",
+
 	"LOGGER_LOG_LEVEL": "logger.level",
 
 	"PARTITIONS": "partitions.count",
